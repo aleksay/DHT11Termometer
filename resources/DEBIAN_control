@@ -1,0 +1,7 @@
+Package: DHT11Temperature
+Version: $(VERSION)
+Architecture: $(ARCH)
+Maintainer: Alessandro Mereu <alessandro85.mereu@gmail.com>
+Description: DHT11 Temperature and Humidity sensor reader as a service
+ This service will read the temperature from DHT11 humidity and temperature sensor once a second and write 
+ the data in your syslog system.

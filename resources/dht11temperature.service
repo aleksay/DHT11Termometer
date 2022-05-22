@@ -1,0 +1,17 @@
+[Unit]
+Description=DHT11 Temperature Sensor reader
+Wants=time-sync.target
+Before=time-sync.target
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/run/dht11temp.pid
+ExecStart=/usr/bin/dht11temperature
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=full
+
+[Install]
+Alias=dht11temperature.service
+WantedBy=multi-user.target
