@@ -6,7 +6,9 @@
 #define MAXTIMINGS	85
 #define DHTPIN		7
 int dht11_dat[5] = { 0, 0, 0, 0, 0 };
- 
+int lastTemp = 0;
+
+
 void read_dht11_dat()
 {
 	uint8_t laststate	= HIGH;
@@ -55,8 +57,15 @@ void read_dht11_dat()
 		f = dht11_dat[2] * 9. / 5. + 32;
 		//printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
 		//	dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
-     	        syslog(LOG_NOTICE, "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
-			dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
+     	        //syslog(LOG_NOTICE, "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
+		//	dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
+
+		if (lastTemp != dht11_dat[2])
+		{
+			 syslog(LOG_NOTICE, "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
+				dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
+			lastTemp = dht11_dat[2];
+		}
 
 
 	}else  {
