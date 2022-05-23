@@ -7,7 +7,7 @@
 #define DHTPIN		7
 int dht11_dat[5] = { 0, 0, 0, 0, 0 };
 int lastTemp = 0;
-
+int lastHum = 0;
 
 void read_dht11_dat()
 {
@@ -60,11 +60,12 @@ void read_dht11_dat()
      	        //syslog(LOG_NOTICE, "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
 		//	dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
 
-		if (lastTemp != dht11_dat[2])
+		if (lastTemp != dht11_dat[2] || lastHum != dht11_dat[0])
 		{
 			 syslog(LOG_NOTICE, "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
 				dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
 			lastTemp = dht11_dat[2];
+			lastHum  = dht11_dat[0];
 		}
 
 
