@@ -45,4 +45,5 @@ clean:
 	rm -rf dht11temperature_$(VERSION)-$(DEBIANREVISION)_$(ARCH) 
 
 cleanall: deb-uninstall clean
- 
+
+rebuild: cleanall deb-install
