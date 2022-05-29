@@ -69,10 +69,21 @@ int init(int argc, char *argv[]){
 // look for:
 // 	/etc/dht11temperature/dht11temperature.conf
 // 	./dht11temperature.conf
+
 // defaults:	
 // 	DHTPIN=7
 // 	pollingTime=1000
 
+	if(DHTPIN <= 0) 
+	{
+		DHTPIN = 7;
+		syslog(LOG_NOTICE,"Invalid pin number found, loading default: %d",DHTPIN);
+	}
+	if(pollingTime <= 0)
+	{
+		pollingTime = 1000;
+		syslog(LOG_NOTICE,"Invalid polling time found, loading default: %d",pollingTime);
+	}
 }
 
 
@@ -135,10 +146,11 @@ void read_dht11_dat()
 int main( int argc, char *argv[] )
 {
 
+	openlog ("DHT11 Temperature Sensor", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+
 	init(argc,argv);
 
-	openlog ("DHT11 Temperature Sensor", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
-        syslog(LOG_NOTICE, "Sensor starting on pin %d, read rate at %d milliseconds",DHTPIN,pollingTime);
+	syslog(LOG_NOTICE, "Sensor starting on pin %d, read rate at %d milliseconds",DHTPIN,pollingTime);
 
 	if ( wiringPiSetup() == -1 )
 	{
