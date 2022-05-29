@@ -7,7 +7,7 @@ After=network.target
 [Service]
 Type=simple
 PIDFile=/run/dht11temp.pid
-ExecStart=/usr/bin/dht11temperature
+ExecStart=/usr/bin/dht11temperature -p 7 -n 1000
 PrivateTmp=yes
 ProtectHome=yes
 ProtectSystem=full

@@ -2,12 +2,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <syslog.h> 
+#include <syslog.h>
+#include <unistd.h>
 #define MAXTIMINGS	85
-#define DHTPIN		7
+
+int DHTPIN = -1;
+int pollingTime = -1;
 int dht11_dat[5] = { 0, 0, 0, 0, 0 };
 int lastTemp = 0;
 int lastHum = 0;
+
+
+
+
+void parseArgs(int argc, char *argv[]){
+
+//      -p --pin 
+//      -n --polling-time
+//      -c --config-file    
+//      -h --help
+
+
+  int option;
+  while((option = getopt(argc, argv, "p:c:n:h")) != -1){ 
+      switch(option){
+         case 'p':
+		 DHTPIN = atoi(optarg);
+		 break;
+         case 'n':
+		 pollingTime = atoi(optarg);
+		 break;
+         case 'c': 
+            printf("Given File: %s\n", optarg);
+            break;
+         case 'h':
+            printf("usage: \n");
+            exit(0);
+         case '?': //used for some unknown options
+            printf("unknown option: %c\n", optopt);
+            break;
+      }
+   }
+
+}
+
+
+int init(int argc, char *argv[]){
+
+// read inline parameters:
+// 	-p --pin 
+// 	-n --polling-time
+// 	-c --config-file	
+
+	parseArgs(argc, argv);
+
+
+//
+//
+// look for:
+// 	/etc/dht11temperature/dht11temperature.conf
+// 	./dht11temperature.conf
+// defaults:	
+// 	DHTPIN=7
+// 	pollingTime=1000
+
+}
+
 
 void read_dht11_dat()
 {
@@ -74,21 +134,24 @@ void read_dht11_dat()
 	}
 }
  
-int main( void )
+int main( int argc, char *argv[] )
 {
+
+	init(argc,argv);
+
 	openlog ("DHT11 Temperature Sensor", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+        syslog(LOG_NOTICE, "Sensor starting on pin %d, read rate at %d milliseconds",DHTPIN,pollingTime);
 
-
-	//printf( "Raspberry Pi wiringPi DHT11 Temperature test program\n" );
- 
 	if ( wiringPiSetup() == -1 )
 		exit( 1 );
  
+	if(DHTPIN == -1) exit (1);
+
 	while ( 1 )
 	{
 		read_dht11_dat();
-		delay( 1000 ); 
+		delay( pollingTime ); 
 	}
- closelog();
+        closelog();
 	return(0);
 }
