@@ -13,7 +13,8 @@ int lastTemp = 0;
 int lastHum = 0;
 
 
-void usage(){
+void usage()
+{
 
 	printf("Usage: dht11temperature [options] ...\n");
 	printf("Options:\n");
@@ -23,20 +24,16 @@ void usage(){
 	printf("\t-h\t\tPrint this usage menu\n");
 	printf("\n");
 	printf("Report bugs to <aleksay@protonmail.com>\n");
-
 }
 
-void parseArgs(int argc, char *argv[]){
-
-//      -p --pin 
-//      -n --polling-time
-//      -c --config-file    
-//      -h --help
-
+void parseArgs(int argc, char *argv[])
+{
 
   int option;
-  while((option = getopt(argc, argv, "p:c:n:h")) != -1){ 
-      switch(option){
+  while((option = getopt(argc, argv, "p:c:n:h")) != -1)
+  { 
+      switch(option)
+      {
          case 'p':
 		 DHTPIN = atoi(optarg);
 		 break;
@@ -54,7 +51,6 @@ void parseArgs(int argc, char *argv[]){
             exit(0);
       }
    }
-
 }
 
 
@@ -126,11 +122,6 @@ void read_dht11_dat()
 	     (dht11_dat[4] == ( (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF) ) )
 	{
 		f = dht11_dat[2] * 9. / 5. + 32;
-		//printf( "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
-		//	dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
-     	        //syslog(LOG_NOTICE, "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
-		//	dht11_dat[0], dht11_dat[1], dht11_dat[2], dht11_dat[3], f );
-
 		if (lastTemp != dht11_dat[2] || lastHum != dht11_dat[0])
 		{
 			 syslog(LOG_NOTICE, "Humidity = %d.%d %% Temperature = %d.%d C (%.1f F)\n",
@@ -138,10 +129,6 @@ void read_dht11_dat()
 			lastTemp = dht11_dat[2];
 			lastHum  = dht11_dat[0];
 		}
-
-
-	}else  {
-		//printf( "Data not good, skip\n" );
 	}
 }
  
@@ -154,9 +141,18 @@ int main( int argc, char *argv[] )
         syslog(LOG_NOTICE, "Sensor starting on pin %d, read rate at %d milliseconds",DHTPIN,pollingTime);
 
 	if ( wiringPiSetup() == -1 )
+	{
+		syslog(LOG_NOTICE,"WiringPi init errors, quit.");
+		closelog();
 		exit( 1 );
- 
-	if(DHTPIN == -1) exit (1);
+	}
+
+	if(DHTPIN == -1) 
+	{
+		syslog(LOG_NOTICE,"Invalid pin number, configuration not loaded, quit.");
+		closelog();
+		exit (1);
+	}
 
 	while ( 1 )
 	{
