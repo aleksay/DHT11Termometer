@@ -13,7 +13,18 @@ int lastTemp = 0;
 int lastHum = 0;
 
 
+void usage(){
 
+	printf("Usage: dht11temperature [options] ...\n");
+	printf("Options:\n");
+	printf("\t-p\t\tPin number, refer to WiringPI library for numeration, default: 7\n");
+	printf("\t-n\t\tPolling time in milliseconds, default: 1000\n");
+	printf("\t-c CONFIGFILE\tPath for the configuration file, default: \"/etc/dht11temperature/dht11temperature.conf\"\n");
+	printf("\t-h\t\tPrint this usage menu\n");
+	printf("\n");
+	printf("Report bugs to <aleksay@protonmail.com>\n");
+
+}
 
 void parseArgs(int argc, char *argv[]){
 
@@ -36,11 +47,11 @@ void parseArgs(int argc, char *argv[]){
             printf("Given File: %s\n", optarg);
             break;
          case 'h':
-            printf("usage: \n");
+            usage();
             exit(0);
          case '?': //used for some unknown options
-            printf("unknown option: %c\n", optopt);
-            break;
+            usage();
+            exit(0);
       }
    }
 
